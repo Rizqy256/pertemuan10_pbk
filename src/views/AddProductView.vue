@@ -52,7 +52,7 @@ input, textarea {
 }
 button {
   padding: 0.9rem;
-  background: #2e7d32;
+  background: #5bbeef;
   color: white;
   border: none;
   border-radius: 0.5rem;
