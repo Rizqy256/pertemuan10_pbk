@@ -1,40 +1,60 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import HealthEntry from '../views/HealthEntry.vue'
-import HealthGraph from '../views/HealthGraph.vue'
-import Recommendation from '../views/Recommendation.vue'
-import Profile from '../views/Profile.vue'
-
-import AdminLogin from '../views/admin/AdminLogin.vue'
-import AdminDashboard from '../views/admin/AdminDashboard.vue'
-import UserList from '../views/admin/UserList.vue'
-import UserHealthDetail from '../views/admin/UserHealthDetail.vue'
-import SendRecommendation from '../views/admin/SendRecommendation.vue'
-import HealthReport from '../views/admin/HealthReport.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import HomeView from '../views/HomeView.vue'
+import ProductDetailView from '../views/ProductDetailView.vue'
+import CartView from '../views/CartView.vue'
+import OrderHistoryView from '../views/OrderHistoryView.vue'
+import AdminProductView from '../views/AdminProductView.vue'
+import EditProductView from '../views/EditProductView.vue'
+import AddProductView from '../views/AddProductView.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/register', name: 'Register', component: Register },
-  { path: '/health-entry', name: 'HealthEntry', component: HealthEntry },
-  { path: '/health-graph', name: 'HealthGraph', component: HealthGraph },
-  { path: '/recommendations', name: 'Recommendation', component: Recommendation },
-  { path: '/profile', name: 'Profile', component: Profile },
-
+  { path: '/', redirect: '/home' },
+  { path: '/login', component: LoginView },
+  { path: '/register', component: RegisterView },
+  { path: '/home', component: HomeView },
+  { path: '/produk/:id', component: ProductDetailView },
+  { path: '/keranjang', component: CartView },
+  { path: '/riwayat', component: OrderHistoryView },
   {
-    path: '/admin',
-    children: [
-      { path: '', name: 'AdminLogin', component: AdminLogin },
-      { path: 'dashboard', name: 'AdminDashboard', component: AdminDashboard },
-      { path: 'users', name: 'UserList', component: UserList },
-      { path: 'users/:id/health', name: 'UserHealthDetail', component: UserHealthDetail },
-      { path: 'send-recommendation', name: 'SendRecommendation', component: SendRecommendation },
-      { path: 'report', name: 'HealthReport', component: HealthReport },
-    ]
+    path: '/admin/produk',
+    component: AdminProductView,
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(localStorage.getItem('user'))
+      if (user && user.username === 'admin') {
+        next()
+      } else {
+        alert('Hanya admin yang bisa mengakses halaman ini')
+        next('/home')
+      }
+    }
+  },
+  {
+    path: '/admin/produk/edit/:id',
+    component: EditProductView,
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(localStorage.getItem('user'))
+      if (user?.username === 'admin') next()
+      else {
+      alert('Akses ditolak!')
+      next('/home')
+    }
   }
+},
+{
+    path: '/admin/produk/tambah',
+    component: AddProductView,
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(localStorage.getItem('user'))
+     if (user?.username === 'admin') next()
+      else {
+      alert('Akses ditolak!')
+      next('/home')
+    }
+  }
+}
+  
 ]
 
 const router = createRouter({
